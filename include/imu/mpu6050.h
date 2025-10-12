@@ -135,6 +135,24 @@ int get_sensor_data_real(int pi, unsigned int handle, imu_sensor_data_t sens, ve
 
 int get_sensor_data_real_fast(int pi, unsigned int handle, sensor_data_real_fast_t* data);
 
+/**
+ * @brief Fast read of accel / gyro data in physical units
+ *
+ * This function does not check the current sensor range or sensitivity.
+ * The user must provide the per_digit conversion factor in the struct.
+ *
+ * @param pi Pigpio handle (returned by pigpiod_daemon_open)
+ * @param handle I2C session handle (returned by i2c_begin_session)
+ * @param[out] accel Pointer to sensor_data_real_fast_t for accelerometer
+ *      containing sensor type and per_digit factor
+ * @param[out] gyro Pointer to sensor_data_real_fast_t for gyroscope
+ *      containing sensor type and per_digit factor
+ *
+ * @return RC_OK if OK, otherwise RC_FAIL_GET
+*/
+
+int get_accel_gyro_data_real_fast(int pi, unsigned int handle, sensor_data_real_fast_t* accel, sensor_data_real_fast_t* gyro);
+
 #ifdef __cplusplus
 }
 #endif //__cplusplus

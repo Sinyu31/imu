@@ -1,4 +1,6 @@
 #include "imu/mpu6050.h"
+#include "imu/mpu6050_config.h"
+#include <stdint.h>
 
 static inline int read_register_8(int pi, unsigned int handle, unsigned int reg, uint8_t* value) {
     assert(value != NULL);
@@ -284,5 +286,34 @@ int get_sensor_data_real_fast(int pi, unsigned int handle, sensor_data_real_fast
     data->vec.x = (float)v_raw.x * data->per_digit;
     data->vec.y = (float)v_raw.y * data->per_digit;
     data->vec.z = (float)v_raw.z * data->per_digit;
+    return RC_OK;
+}
+
+int get_accel_gyro_data_real_fast(int pi, unsigned int handle, sensor_data_real_fast_t* accel, sensor_data_real_fast_t* gyro) {
+    assert(pi >= 0);
+    assert(accel != NULL && gyro != NULL);
+
+    uint8_t buf[12];
+    unsigned int size = sizeof(buf);
+    if (read_data_n(pi, handle, REGMAP_ACCEL_XOUT_H, buf, size) != size) return RC_FAIL_GET;
+    
+    vec3i_t accel_raw, gyro_raw;
+
+    accel_raw.x = (int16_t)((buf[0] << 8) | buf[1]);
+    accel_raw.y = (int16_t)((buf[2] << 8) | buf[3]);
+    accel_raw.z = (int16_t)((buf[4] << 8) | buf[5]);
+
+    gyro_raw.x = (int16_t)((buf[6] << 8)  | buf[7]);
+    gyro_raw.y = (int16_t)((buf[8] << 8)  | buf[9]);
+    gyro_raw.z = (int16_t)((buf[10] << 8) | buf[11]);
+
+    accel->vec.x = (float)accel_raw.x * accel->per_digit;
+    accel->vec.y = (float)accel_raw.y * accel->per_digit;
+    accel->vec.z = (float)accel_raw.z * accel->per_digit;
+
+    gyro->vec.x = (float)gyro_raw.x * gyro->per_digit;
+    gyro->vec.y = (float)gyro_raw.y * gyro->per_digit;
+    gyro->vec.z = (float)gyro_raw.z * gyro->per_digit;
+
     return RC_OK;
 }
