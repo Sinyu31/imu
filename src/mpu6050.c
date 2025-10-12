@@ -293,7 +293,7 @@ int get_accel_gyro_data_real_fast(int pi, unsigned int handle, sensor_data_real_
     assert(pi >= 0);
     assert(accel != NULL && gyro != NULL);
 
-    uint8_t buf[12];
+    uint8_t buf[14];
     unsigned int size = sizeof(buf);
     if (read_data_n(pi, handle, REGMAP_ACCEL_XOUT_H, buf, size) != size) return RC_FAIL_GET;
     
@@ -302,10 +302,10 @@ int get_accel_gyro_data_real_fast(int pi, unsigned int handle, sensor_data_real_
     accel_raw.x = (int16_t)((buf[0] << 8) | buf[1]);
     accel_raw.y = (int16_t)((buf[2] << 8) | buf[3]);
     accel_raw.z = (int16_t)((buf[4] << 8) | buf[5]);
-
-    gyro_raw.x = (int16_t)((buf[6] << 8)  | buf[7]);
-    gyro_raw.y = (int16_t)((buf[8] << 8)  | buf[9]);
-    gyro_raw.z = (int16_t)((buf[10] << 8) | buf[11]);
+    
+    gyro_raw.x = (int16_t)((buf[8] << 8)  | buf[9]);
+    gyro_raw.y = (int16_t)((buf[10] << 8) | buf[11]);
+    gyro_raw.z = (int16_t)((buf[12] << 8) | buf[13]);
 
     accel->vec.x = (float)accel_raw.x * accel->per_digit;
     accel->vec.y = (float)accel_raw.y * accel->per_digit;
