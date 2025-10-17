@@ -13,7 +13,9 @@
 #define MPU6050_I2C_ADDR     0x68
 
 /* The expected value of REGMAP_WHO_AM_I */
-#define WHO_AM_I_EXPECT      0x68
+#define WHO_AM_I_EXPECT_0    0x68
+#define WHO_AM_I_EXPECT_1    0x70
+#define WHO_AM_I_EXPECT_2    0x71
 
 /* Bus */
 #define BUS_DEV_I2C_0           0

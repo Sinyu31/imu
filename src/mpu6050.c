@@ -1,6 +1,5 @@
 #include "imu/mpu6050.h"
 #include "imu/mpu6050_config.h"
-#include <stdint.h>
 
 static inline int read_register_8(int pi, unsigned int handle, unsigned int reg, uint8_t* value) {
     assert(value != NULL);
@@ -142,7 +141,8 @@ int i2c_begin_session(int pi, unsigned int bus, unsigned int addr) {
     do {
         uint8_t who_am_i = 0;
         if (read_register_8(pi, handle, REGMAP_WHO_AM_I, &who_am_i) != RC_OK) break;
-        if (who_am_i != WHO_AM_I_EXPECT) break;
+        who_am_i &= 0x7E; //0b01111110
+        if (who_am_i != WHO_AM_I_EXPECT_0 && who_am_i != WHO_AM_I_EXPECT_1 && who_am_i != WHO_AM_I_EXPECT_2) break;
         if (write_register_8(pi, handle, REGMAP_PWR_MGMT_1, (uint8_t)PWR_MGMT_WARE_UP) != RC_OK) break;
             
         return handle;
